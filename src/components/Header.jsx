@@ -1,73 +1,63 @@
 import React, { useState } from "react";
-import { Link } from "react-router";
 import { SiTask } from "react-icons/si";
-import { div } from "motion/react-client";
-import { BsMoonStarsFill } from "react-icons/bs";
-// import { div } from 'motion/react-client';
+import { useTheme } from "./ThemeProvider"
+import { Moon, Sun } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+
   return (
-    <header className="bg-gray-50">
-      <div className="max-w-6xl mt-4 mx-auto border-2 rounded-full border-gray-300 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* left and right */}
+    <header className="bg-white-50 dark:bg-slate-950 transition-colors duration-300">
+      <div className="relative top-1 max-w-6xl mx-auto border-2 rounded-full border-gray-300 dark:border-gray-700 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
+        <div className="flex justify-between h-16">
+          <div className="flex items-center ">
+            <Link to="/" className="flex items-center gap-2">
+              <SiTask className="text-3xl text-gray-700 dark:text-blue-400" />
+              <span className="text-xl sm:text-2xl font-bold text-gray-800 dark:text-white">
+                SwiftTask
+              </span>
+            </Link>
 
-          {/* left */}
-          <div className="flex">
-            {/* logo */}
-            <>
-              <Link to="/" className="flex items-center gap-2">
-                <SiTask className="text-3xl text-gray-700" />
-                <span className="text-xl sm:text-2xl font-bold text-gray-800">
-                  SwiftTask
-                </span>
-              </Link>
-            </>
-
-            {/* left  */}
             <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link to="/" className="">
+              <Link to="/" className="text-xl text-gray-700 dark:text-gray-300">
                 Home
               </Link>
-              <Link to="about" className="">
+              <Link to="about" className="text-xl text-gray-700 dark:text-gray-300">
                 About
               </Link>
             </nav>
           </div>
 
-          {/* right */}
-          <div className="flex">
-            <div className="">
-              <BsMoonStarsFill />
+          <div className="flex items-center">
+            <div className="p-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors"
+              >
+                {/* Switch icons based on theme */}
+                {theme === "dark" ? (
+                  <Sun className="text-yellow-400" /> 
+                ) : (
+                  <Moon className="text-gray-700" />
+                )} 
+              </button>
             </div>
+            
             {isLoggedIn ? (
-              <>
-                {/* profile */}
-                <div className="text-gray-500 text-sm">
-                  <span>hello, {"Ahmed"}</span>
-                </div>
-                <div>
-
-                </div>
-              </>
+              <div className="text-gray-500 dark:text-gray-400 text-sm">
+                <span>hello, Ahmed</span>
+              </div>
             ) : (
-            <div className="flex items-center gap-2 border border-gray-200 rounded-full p-1">
-              <Link
-                to="/login"
-                className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900"
-              >
-                Login
-              </Link>
-
-              <Link
-                to="/register"
-                className="px-4 py-2 text-sm bg-gray-800 text-white rounded-full hover:bg-gray-900"
-              >
-                Register
-              </Link>
-            </div>
-
+              <div className="flex items-center gap-2 border border-gray-200 dark:border-gray-700 rounded-full p-1">
+                <Link to="/login" className="px-4 py-2 text-sm text-gray-600 dark:text-gray-300">
+                  Login
+                </Link>
+                <Link to="/register" className="px-4 py-2 text-sm bg-gray-800 dark:bg-blue-600 text-white rounded-full">
+                  Register
+                </Link>
+              </div>
             )}
           </div>
         </div>

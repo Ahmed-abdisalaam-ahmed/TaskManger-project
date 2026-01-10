@@ -1,23 +1,34 @@
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const themeConetxt = createContext(initialState);
+const ThemeContext = createContext();
 
-const initialState = {
+export function ThemeProvider({ children }) {
+  // Start with 'dark' if nothing is saved in localStorage
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    const root = window.document.documentElement;
     
-}
+    // Simply swap the class on the <html> tag
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
 
-export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState();
+    // Save choice for next time
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   return (
-    <ThemeProvider value={{ theme, setTheme }}>
-     {children}
-    </ThemeProvider>);
-};
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
 
-export const useTheme = () => {
-  const context = useContext(themeConetxt);
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider");
-  return context;
-};
+export const useTheme = () => useContext(ThemeContext);

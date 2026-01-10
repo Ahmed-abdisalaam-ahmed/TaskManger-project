@@ -4,7 +4,7 @@ import { FiAlertTriangle } from 'react-icons/fi'
 
 const NotFound = () => {
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100 p-6">
+    <div className="min-h-screen bg-white text-black dark:bg-slate-950 dark:text-slate-900 transition-colors duration-300 flex h-screen items-center justify-center p-6">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
