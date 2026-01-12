@@ -1,9 +1,240 @@
-import React from 'react'
+import { useEffect, useState } from "react";
+import { FiCamera, FiMail, FiUser } from "react-icons/fi";
+import { useAuth } from "../contexts/AuthContext";
+import supabase from "../lib/supabase";
+import toast from "react-hot-toast";
+import { getUserProfile } from "../lib/Auth";
+import { div } from "motion/react-m";
+
 
 const Profile = () => {
-  return (
-    <div className="min-h-screen bg-white text-black dark:bg-slate-950 dark:text-white transition-colors duration-300">Profile</div>
-  )
-}
+  const [loading, setLoading] = useState(false);
+  const {user, profile ,isLoading} = useAuth();
+  const [username, setUsername] = useState("");
+  const [avatar, setAvatar] = useState(null);
+  const [avatarUrl, setAvatarUrl] = useState("");
 
-export default Profile
+  console.log('userData',user)
+  console.log("Profile info", profile)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      setLoading(true);
+
+      let updates = { username };
+
+      // if file selected upload first
+      if (avatar) {
+        const fileExt = avatar.name.split(".").pop();
+        const fileName = `${user.id}-${Math.random().toString(36).substring(2)}`;
+        const filePath = `avatars/${fileName}.${fileExt}`;
+
+        const { error: avatarError } = await supabase.storage
+          .from("avatars")
+          .upload(filePath, avatar);
+
+        if (avatarError) throw avatarError;
+
+        // get the uploaded url
+        const { data: avatarData } = supabase.storage
+          .from("avatars")
+          .getPublicUrl(filePath);
+
+        updates = {
+          ...updates,
+          avatar_url: avatarData.publicUrl,
+        };
+
+        setAvatarUrl(avatarData.publicUrl);
+
+        // console.log("avatar filePath:", avatarData)
+      }
+
+      console.log("updates to be applied ");
+
+      const { error, data } = await supabase
+
+        .from("users")
+        .update(updates)
+        .eq("id", user.id)
+        .select("username, avatar_url")
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        setAvatarUrl(data.avatar_url);
+        setUsername(data.username);
+      }
+
+      toast.success("Profile updated successfully.");
+    } catch (error) {
+      toast.error(error.message || "error updating user Profile");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAvatarChange = (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("hey! the file is too large");
+        // alert("the size it is bad")
+        return;
+      } else {
+        toast.success("the size is perfect 👍");
+        // alert("the size it is good")
+      }
+      setAvatar(file);
+
+      const previewUrl = URL.createObjectURL(file);
+      setAvatarUrl(previewUrl);
+    }
+  };
+
+  useEffect(() => {
+    if (profile) {
+      setUsername(profile.username);
+      setAvatarUrl(profile.avatar_url);
+    } else if (user) {
+      fetchUserProfile();
+    }
+  }, [profile, user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const { username, avatar_url } = await getUserProfile(user.id);
+      if (username) {
+        setUsername(username);
+        setAvatarUrl(avatar_url);
+      }
+    } catch (error) {
+      console.error("error getting user Profile", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if(isLoading){
+    return(
+      <div className="min-h-screen flex justify-center items-center">
+        <div className="animate-spin w-12 h-12 rounded-full border-y-2 border-slate-500"></div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen  transition-colors duration-300">
+      <div className="py-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto">
+          <div className='bg-white shadow-xl rounded-lg overflow-hidden'>
+            {/* profile Header */}
+            <div className="bg-linear-to-r from-slate-500 to-slate-600 px-6 py-8">
+              <div className="flex  flex-col items-center">
+                <div className="relative group">
+                  {/* profile picture */}
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg">
+                    <img
+                      src={
+                        avatarUrl ||
+                        "https://images.unsplash.com/photo-1495211895963-08d8812dcbf0?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                      }
+                      alt="Profile"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  {/* input image upload */}
+
+                  <label
+                    htmlFor="avatar-upload"
+                    className="absolute bottom-0 right-0 bg-white rounded-full p-2 shadow-lg cursor-pointer
+                  transform transition-transform duration-200 hover:scale-110"
+                  >
+                  <FiCamera className="w-5 h-5 text-slate-600" />
+                  </label>
+                  <input
+                    type="file"
+                    id="avatar-upload"
+                    className=" hidden"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                  />
+                </div>
+
+                {/* user info */}
+                <h2 className="mt-4 text-2xl font-bold text-white">
+                  {username || "Your Profile"}
+                </h2>
+                <p className="text-orange-100">{user?.email}</p>
+              </div>
+            </div>
+            {/* Profile form*/}
+
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              <div className="space-y-6">
+                {/* Username */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Username
+                  </label>
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiUser className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="text"
+                      value={username}
+                      onChange={(e) => setUsername(e.target.value)}
+                      className="block w-full pl-10 text-black pr-3 py-2 border border-gray-300 rounded-md 
+                    focus:outline-none focus:ring-2 focus:ring-slate-500 focus:border-slate-500"
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Email (Read-only) */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <div className="mt-1 relative rounded-md shadow-sm">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <FiMail className="h-5 w-5 text-gray-400" />
+                    </div>
+                    <input
+                      type="email"
+                      value={user?.email}
+                      className="block w-full pl-10 pr-3 py-2 border border-gray-300 text-black rounded-md bg-gray-50"
+                      disabled
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-between pt-6 border-t border-gray-200">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium 
+                rounded-md text-white bg-slate-600 hover:bg-slate-700 focus:outline-none focus:ring-2 
+                focus:ring-offset-2 focus:ring-slate-500 disabled:opacity-50 cursor-pointer"
+                >
+                  {loading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;
