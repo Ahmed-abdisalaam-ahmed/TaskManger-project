@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
+import { signIn } from '../lib/Auth';
+import toast from 'react-hot-toast';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -8,9 +10,25 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
-  // const authinfo = useAuth();
-  
   const navigate = useNavigate()
+
+  const handleSubmit = async(event) =>{
+    event.preventDefault();
+
+    setIsLoading(true)
+    setError(null)
+
+    try {
+      await signIn(email,password)
+      toast.success("Welcome back!");
+      navigate('/')
+    } catch (error) {
+      setError(error.message || "Failed to sign in . Please check your credentials.")
+      console.log('error',error)
+    }finally{
+      setIsLoading(false)
+    }
+  }
   return (
     <div className="min-h-screen flex justify-center items-center mx-auto bg-white text-black dark:bg-slate-950 dark:text-white transition-colors duration-300">
             <div className="w-full sm:max-w-md">  
@@ -32,7 +50,7 @@ const Login = () => {
             )
           }
 
-          <form>
+          <form onSubmit={handleSubmit}>
             {/* email */}
            <div className="mb-6">
               <label className="block text-gray-700 dark:text-gray-400 text-sm font-semibold mb-2" htmlFor="email">

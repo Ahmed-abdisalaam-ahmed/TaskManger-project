@@ -1,6 +1,7 @@
 import { UserRoundPlus } from 'lucide-react'
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { signUp } from '../lib/Auth'
 
 const Register = () => {
   const [email, setEmail] = useState('')
@@ -10,6 +11,8 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(false)
+
+  const navigate = useNavigate()
 
 
   const handleSubmit = async(event) =>{
@@ -25,14 +28,13 @@ const Register = () => {
       return
     }
 
-
     try {
 
       await signUp(email,password,username)
       setSuccess(true);
 
       setTimeout(() => {
-          navigate('/signin')
+        navigate('/login')
       }, 3000);
 
     } catch (error) {
@@ -56,7 +58,7 @@ const Register = () => {
 
       {/* form info  */}
         <div className='bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800
- rounded-lg shadow-md p-8'>
+            rounded-lg shadow-md p-8'>
 
           {
             error && (

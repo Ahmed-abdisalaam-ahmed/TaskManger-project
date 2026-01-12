@@ -8,6 +8,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard'
 import Tasks from './pages/Tasks'
+import Profile from './pages/Profile'
 
 export const routes = createBrowserRouter([
 
@@ -34,6 +35,10 @@ export const routes = createBrowserRouter([
             {
                 path:'/register',
                 element: <Register/>
+            },
+            {
+                path:'/profile',
+                element: <Profile />
             },
             {
                 path:'/dashboard',
