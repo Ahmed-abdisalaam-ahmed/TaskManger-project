@@ -1,7 +1,7 @@
 import { Navigate } from "react-router";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../contexts/AuthContext"
 
-export default function ProtectedRoute({children, redirectTo = "/signin"}){
+const ProtectedRoute = ({children, redirectTo="/Login"}) => {
 
     const {isLoading, isLoggedIn} = useAuth();
 
@@ -19,3 +19,4 @@ export default function ProtectedRoute({children, redirectTo = "/signin"}){
 
     return children;
 }
+export default ProtectedRoute
