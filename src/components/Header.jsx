@@ -11,13 +11,15 @@ const Header = () => {
   // const [isLoggedIn, setLoggedIn] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const [isDropdownOpen, setIsDropdownOpen] = useState();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { isLoggedIn, user, profile, logOut } = useAuth();
    const avatar_url = ''
      return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md dark:bg-slate-950/80 transition-colors duration-300 py-2">
+    <header className="sticky top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md dark:bg-slate-950/80 transition-colors duration-300 py-2">
       <div className="max-w-6xl mx-auto border-2 rounded-full border-gray-300 dark:border-gray-700 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
         <div className="flex justify-between items-center h-16">
+
           <div className="flex items-center gap-14">
             <Link to="/" className="flex items-center gap-2">
               <SiTask className="text-3xl text-gray-600 dark:text-blue-400" />
@@ -125,6 +127,8 @@ const Header = () => {
                     </div>
                   )}
                 </div>
+
+
               </>
             ) : (
               <div className="flex items-center gap-2 border border-gray-200 dark:border-gray-700 rounded-full p-1">
@@ -143,6 +147,7 @@ const Header = () => {
               </div>
             )}
           </div>
+            
           
         </div>
       </div>
