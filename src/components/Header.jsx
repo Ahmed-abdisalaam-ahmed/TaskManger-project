@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { SiTask } from "react-icons/si";
 import { useTheme } from "./ThemeProvider";
-import { Moon, Sun } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 // import { div } from "motion/react-m";
@@ -14,8 +14,8 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { isLoggedIn, user, profile, logOut } = useAuth();
-   const avatar_url = ''
-     return (
+  const avatar_url = "";
+  return (
     <header className="sticky top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md dark:bg-slate-950/80 transition-colors duration-300 py-2">
       <div className="max-w-6xl mx-auto border-2 rounded-full border-gray-300 dark:border-gray-700 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
         <div className="flex justify-between items-center h-16">
@@ -28,7 +28,10 @@ const Header = () => {
             </Link>
 
             <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link to="/" className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300">
+              <Link
+                to="/"
+                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
+              >
                 Home
               </Link>
               <Link
@@ -91,10 +94,14 @@ const Header = () => {
                     onMouseEnter={() => setIsDropdownOpen(true)}
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   >
-                      <img
-                        className="w-8 h-8 rounded-full "
-                        src={profile?.avatar_url || <FaUser className="text-slate-600" />}
-                      />
+                    <img
+                      className="w-8 h-8 rounded-full "
+                      src={
+                        profile?.avatar_url || (
+                          <FaUser className="text-slate-600" />
+                        )
+                      }
+                    />
                   </button>
 
                   {/* Dropdown menu */}
@@ -126,8 +133,6 @@ const Header = () => {
                     </div>
                   )}
                 </div>
-
-
               </>
             ) : (
               <div className="flex items-center gap-2 border border-gray-200 dark:border-gray-700 rounded-full p-1">
@@ -146,8 +151,75 @@ const Header = () => {
               </div>
             )}
           </div>
-          
-          
+          {/* Hamberger */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 rounded-md text-gray-600 dark:text-gray-300"
+          >
+            {isMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
+
+          {isMenuOpen && (
+            <div className="md:hidden absolute top-20 left-4 right-4 bg-white dark:bg-slate-900 border-2 border-gray-300 dark:border-gray-700 rounded-xl z-50 p-4">
+              <nav className="flex flex-col space-y-4">
+                <Link
+                  onClick={() => setIsMenuOpen(false)}
+                  to="/"
+                  className="text-lg font-medium dark:text-white"
+                >
+                  Home
+                </Link>
+                <Link
+                  onClick={() => setIsMenuOpen(false)}
+                  to="/about"
+                  className="text-lg font-medium dark:text-white"
+                >
+                  About
+                </Link>
+                {isLoggedIn ? (
+                  <>
+                    <Link
+                      onClick={() => setIsMenuOpen(false)}
+                      to="/dashboard"
+                      className="text-lg font-medium dark:text-white"
+                    >
+                      Dashboard
+                    </Link>
+                    <Link
+                      onClick={() => setIsMenuOpen(false)}
+                      to="/articles"
+                      className="text-lg font-medium dark:text-white"
+                    >
+                      Articles
+                    </Link>
+                    <button
+                      onClick={logOut}
+                      className="text-left text-lg font-medium text-red-500"
+                    >
+                      Logout
+                    </button>
+                  </>
+                ) : (
+                  <div className="flex flex-col gap-2 pt-4 border-t border-gray-200">
+                    <Link
+                      onClick={() => setIsMenuOpen(false)}
+                      to="/login"
+                      className="text-center py-2 rounded-xl border border-gray-300 dark:text-white"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      onClick={() => setIsMenuOpen(false)}
+                      to="/register"
+                      className="text-center py-2 rounded-xl bg-blue-600 text-white"
+                    >
+                      Register
+                    </Link>
+                  </div>
+                )}
+              </nav>
+            </div>
+          )}
         </div>
       </div>
     </header>

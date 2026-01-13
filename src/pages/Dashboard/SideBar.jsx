@@ -1,71 +1,135 @@
-import { Bot, CalendarCheck, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  Bot,
+  CalendarCheck,
+  LayoutDashboard,
+  ListChecks,
+  Settings,
+} from "lucide-react";
 import React from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router-dom"; // Fixed 'react-router' to 'react-router-dom'
+import { useAuth } from "../../contexts/AuthContext";
+import { FaUser } from "react-icons/fa";
 
-const SideBar = () => {
+const SideBar = ({ closeMenu }) => {
+  const { profile, user } = useAuth();
   return (
-    <div className="min-w-full ">
+    <div className="min-w-full">
       <nav className="flex flex-col justify-between gap-8">
-        {/* lists */}
+        {/* Overview Section */}
         <div className="space-y-4">
-          <h2 className="font-bold text-slate-900 dark:text-slate-100 px-4 text-xs font-semibold tracking-tight text-muted-foreground uppercase ">
-            OverView
+          <h2 className="px-4 text-xs font-semibold tracking-tight text-slate-500 uppercase">
+            Overview
           </h2>
-          <Link
-            className="group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all bg-primary/10 text-primary hover:bg-primary/20"
+          <NavLink
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all 
+            ${
+              isActive
+                ? "bg-blue-50 dark:bg-slate-800 text-green-500 font-bold" // Styles when link is ACTIVE
+                : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
+            }`
+            }
             to="/dashboard"
           >
-            <div class="flex items-center justify-center w-6 h-6 transition-colors text-primary">
-              <LayoutDashboard />
-            </div>
+            <LayoutDashboard size={20} className="text-blue-500" />
             <span>Dashboard</span>
-          </Link>
+          </NavLink>
         </div>
+
+        {/* Tasks Section */}
         <div className="space-y-2">
-          <h2 className="font-bold text-slate-900 dark:text-slate-100 px-4 text-xs font-semibold tracking-tight text-muted-foreground uppercase">
+          <h2 className="px-4 text-xs font-semibold tracking-tight text-slate-500 uppercase">
             Tasks
           </h2>
-          <Link
-            className="group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all bg-primary/10 text-primary hover:bg-primary/20"
+          <NavLink
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all 
+            ${
+              isActive
+                ? "bg-blue-50 dark:bg-slate-800 text-green-500 font-bold" // Styles when link is ACTIVE
+                : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
+            }`
+            }
             to="/dashboard/tasks"
           >
-            <div class="flex items-center justify-center w-6 h-6 transition-colors text-primary">
-              <CalendarCheck />
-            </div>
+            <CalendarCheck size={20} className="text-blue-500" />
             <span>Tasks</span>
-          </Link>
-          <Link
-            className="group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all bg-primary/10 text-primary hover:bg-primary/20"
+          </NavLink>
+          <NavLink
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all 
+            ${
+              isActive
+                ? "bg-blue-50 dark:bg-slate-800 text-green-500 font-bold" // Styles when link is ACTIVE
+                : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
+            }`
+            }
             to="/dashboard/taskList"
           >
-            <div class="flex items-center justify-center w-6 h-6 transition-colors text-primary">
-              <ListChecks />
-            </div>
+            <ListChecks size={20} className="text-blue-500" />
             <span>Task Lists</span>
-          </Link>
+          </NavLink>
         </div>
 
+        {/* AI Section */}
         <div className="space-y-2">
-          <h2 className="font-bold text-slate-900 dark:text-slate-100 px-4 text-xs font-semibold tracking-tight text-muted-foreground uppercase">
-            Ai Assistant
+          <h2 className="px-4 text-xs font-semibold tracking-tight text-slate-500 uppercase">
+            AI Assistant
           </h2>
-          <Link
-            className="group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all bg-primary/10 text-primary hover:bg-primary/20"
+          <NavLink
             to="/dashboard/aiBots"
+            onClick={closeMenu}
+            className={({ isActive }) =>
+              `group flex items-center gap-x-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-all 
+            ${
+              isActive
+                ? "bg-blue-50 dark:bg-slate-800 text-green-500 font-bold" // Styles when link is ACTIVE
+                : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
+            }`
+            }
           >
-            <div class="flex items-center justify-center w-6 h-6 transition-colors text-primary">
-              <Bot />
+            <Bot size={20} className="text-blue-500" />
+            <span>AI Assistant</span>
+          </NavLink>
+        </div>
+
+        <div class="relative z-50 px-2 py-2 mt-auto">
+          <div class="relative rounded-lg overflow-hidden">
+            <div class="relative p-2">
+              <div class="flex items-center gap-3">
+                <span class="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 border border-border">
+                  <span class="flex h-full w-full items-center justify-center rounded-full font-semibold text-xs bg-primary/10 text-primary">
+                    <img
+                      className="w-8 h-8 rounded-full "
+                      src={
+                        profile?.avatar_url || (
+                          <FaUser className="text-slate-600" />
+                        )
+                      }
+                    />
+                  </span>
+                </span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium leading-none truncate">
+                    {profile?.username}
+                  </p>
+                  <p class="text-xs text-muted-foreground mt-1 truncate">
+                    {user?.email}
+                  </p>
+                </div>
+                <Link to="/dashboard/settings">
+                  <button class="inline-flex items-center justify-center cursor-pointer whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:text-accent-foreground h-8 w-8 hover:bg-accent/50">
+                    <Settings />
+                  </button>
+                </Link>
+              </div>
             </div>
-            <span>Ai Assistant</span>
-          </Link>
+          </div>
         </div>
       </nav>
-
-      <div className="fixed bottom-0">
-        heloo
-      </div>
-
-      
     </div>
   );
 };
