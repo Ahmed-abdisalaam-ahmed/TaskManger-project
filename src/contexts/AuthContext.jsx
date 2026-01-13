@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, useRef } from "react";
 import { getUserProfile, onAuthChange, signOut } from "../lib/Auth.js";
+import { useNavigate } from "react-router";
 
 const AuthContext = createContext(null);
 
@@ -9,6 +10,7 @@ export function AuthProvider({children}){
     const [profile, setProfile] = useState(null)
     const [isLoading,setIsLoading] = useState(true)
     const prevUserId = useRef(null)
+    // const navigate = useNavigate()
 
     useEffect(() => {
 

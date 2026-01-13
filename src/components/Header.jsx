@@ -19,7 +19,6 @@ const Header = () => {
     <header className="sticky top-0 left-0 w-full z-50 bg-white/80 backdrop-blur-md dark:bg-slate-950/80 transition-colors duration-300 py-2">
       <div className="max-w-6xl mx-auto border-2 rounded-full border-gray-300 dark:border-gray-700 px-4 sm:px-6 lg:px-8 bg-white dark:bg-slate-900">
         <div className="flex justify-between items-center h-16">
-
           <div className="flex items-center gap-14">
             <Link to="/" className="flex items-center gap-2">
               <SiTask className="text-3xl text-gray-600 dark:text-blue-400" />
@@ -147,7 +146,7 @@ const Header = () => {
               </div>
             )}
           </div>
-            
+          
           
         </div>
       </div>
