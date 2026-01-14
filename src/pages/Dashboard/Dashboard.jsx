@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-black dark:bg-slate-950 dark:text-white transition-colors duration-300">
+    <div className="min-h-screen bg-white text-black dark:bg-slate-950 dark:text-white transition-colors duration-300 border border-t rounded">
       
       {/* Mobile Toggle Button */}
       <div className="sm:hidden fixed bottom-6 right-6 z-50">

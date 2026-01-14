@@ -7,13 +7,13 @@ import About from './pages/About'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Dashboard/Dashboard'
-import Tasks from './pages/Dashboard/Tasks'
 import Profile from './pages/Profile'
 import UnAuthitecationRouter from './components/UnAuthitecationRouter'
 import Overview from './pages/Dashboard/Overview'
 import ProtectedRoute from './components/ProtectedRouter'
 import AiAssistant from './pages/Dashboard/AiAssistant'
 import TaskList from './pages/Dashboard/TaskList'
+import CreateTasks from './pages/Dashboard/CreateTasks'
 
 export const routes = createBrowserRouter([
 
@@ -54,24 +54,20 @@ export const routes = createBrowserRouter([
                         element:<Overview />
                     },
                     {
-                        path:'tasks',
-                        element: <Tasks />
-                    },
-                    {
                         path:'taskList',
                         element: <TaskList />
                     },
                     {
-                        path:'tasks',
-                        element: <Tasks />
-                    },
-                    {
-                        path:'settings',
-                        element:<Profile />
+                        path:'create-Tasks',
+                        element: <CreateTasks />
                     },
                     {
                         path:'aiBots',
                         element:<AiAssistant />
+                    },
+                                        {
+                        path:'settings',
+                        element:<Profile />
                     },
 
                 ]

@@ -14,7 +14,7 @@ const SideBar = ({ closeMenu }) => {
   const { profile, user } = useAuth();
   return (
     <div className="min-w-full">
-      <nav className="flex flex-col justify-between gap-8">
+      <nav className="flex flex-col max-h-screen justify-between gap-8">
         {/* Overview Section */}
         <div className="space-y-4">
           <h2 className="px-4 text-xs font-semibold tracking-tight text-slate-500 uppercase">
@@ -52,10 +52,10 @@ const SideBar = ({ closeMenu }) => {
                 : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
             }`
             }
-            to="/dashboard/tasks"
+            to="/dashboard/create-tasks"
           >
             <CalendarCheck size={20} className="text-blue-500" />
-            <span>Tasks</span>
+            <span>Create Task</span>
           </NavLink>
           <NavLink
             onClick={closeMenu}
