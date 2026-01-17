@@ -8,7 +8,8 @@ export async function CreateTask(tasks) {
         title:tasks.title,
         description:tasks.description,
         priority:tasks.priority,
-        dueDate:tasks.dueDate
+        due_date:tasks.dueDate,
+        user_id:tasks.user_id
     }
     
     const {data,error} = await supabase
@@ -23,3 +24,4 @@ export async function CreateTask(tasks) {
 
     return data
 }
+

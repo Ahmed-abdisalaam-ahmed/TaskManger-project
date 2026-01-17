@@ -3,15 +3,39 @@ import { ChevronDownIcon, Calendar, PencilLine, ListTodo } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import clsx from "clsx";
+import { CreateTask } from "../../lib/Tasks";
+import { Navigate, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const CreateTasks = () => {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const isEditMode = true;
+  
 
-  const onsubmit = async (data) => {
+  const navigate = useNavigate();
+
+  const onsubmit = async (formData) => {
     // data contains all your form fields automatically
-    console.log("Form Data:", data);
+    console.log("Form Data:", formData);
     // Here you would call supabase.from('tasks').insert([data])
+
+    try {
+       const tasksPayload = {
+        title:formData.title,
+        description:formData.description,
+        priority:formData.priority,
+        dueDate:formData.dueDate
+    }
+      await CreateTask(tasksPayload);
+      toast.success("Added successfully");
+
+      navigate('/dashboard/taskList');
+    } catch (error) {
+      console.log("added Failed,tyr Again!",error)
+      toast.error("added Failed,tyr Again!")
+    }
+
+
   };
 
   const inputClasses = clsx(
