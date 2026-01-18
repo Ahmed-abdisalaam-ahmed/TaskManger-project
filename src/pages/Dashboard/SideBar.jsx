@@ -52,7 +52,7 @@ const SideBar = ({ closeMenu }) => {
                 : "text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-800" // Styles when NOT active
             }`
             }
-            to="/dashboard/create-tasks"
+            to="/dashboard/editortasks"
           >
             <CalendarCheck size={20} className="text-blue-500" />
             <span>Create Task</span>

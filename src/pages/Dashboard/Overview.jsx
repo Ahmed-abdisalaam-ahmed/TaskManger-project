@@ -21,14 +21,14 @@ const Overview = () => {
     fetchStats();
 
     // Real-time update: Haddii database-ku is beddelo, nambaradu ha is beddeleen
-    const channel = supabase
-      .channel("stats-sync")
-      .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, () => {
-        fetchStats();
-      })
-      .subscribe();
+    // const channel = supabase
+    //   .channel("stats-sync")
+    //   .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, () => {
+    //     fetchStats();
+    //   })
+    //   .subscribe();
 
-    return () => supabase.removeChannel(channel);
+    // return () => supabase.removeChannel(channel);
   }, []);
 
   return (

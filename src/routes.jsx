@@ -13,7 +13,7 @@ import Overview from './pages/Dashboard/Overview'
 import ProtectedRoute from './components/ProtectedRouter'
 import AiAssistant from './pages/Dashboard/AiAssistant'
 import TaskList from './pages/Dashboard/TaskList'
-import CreateTasks from './pages/Dashboard/CreateTasks'
+import TasksEditor from './pages/Dashboard/TasksEditor'
 
 export const routes = createBrowserRouter([
 
@@ -58,8 +58,12 @@ export const routes = createBrowserRouter([
                         element: <TaskList />
                     },
                     {
-                        path:'create-Tasks',
-                        element: <CreateTasks />
+                        path:'editorTasks',
+                        element: <TasksEditor />
+                    },
+                    {
+                        path:'editorTasks/:id',
+                        element: <TasksEditor />
                     },
                     {
                         path:'aiBots',

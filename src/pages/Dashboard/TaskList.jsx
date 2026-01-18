@@ -23,7 +23,24 @@ const TaskList = () => {
     else setTasks(data);
     setLoading(false);
   };
+  const formatDate = (dateString) => {
+    if (!dateString) return 'No deadline';
 
+    try {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      const date = new Date(dateString);
+
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+
+      return date.toLocaleDateString(undefined, options);
+    } catch (error) {
+      console.error('Error formatting date:', error);
+      return 'Date format error';
+    }
+  }
   // --- FILTER LOGIC ---
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
@@ -76,7 +93,7 @@ const TaskList = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold dark:text-white">{task.title}</h3>
-                  <p className="text-sm text-slate-500">{task.due_date || "No deadline"}</p>
+                  <p className="text-sm text-slate-500">{formatDate(task.due_date) || "No deadline"}</p>
                 </div>
               </div>
 

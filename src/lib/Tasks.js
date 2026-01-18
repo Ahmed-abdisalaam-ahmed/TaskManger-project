@@ -25,3 +25,30 @@ export async function CreateTask(tasks) {
     return data
 }
 
+export async function UpdateTasks(id , updates) {
+    console.log(`attemmping to update task with id:${id}`,updates)
+
+
+    const {error , data} = await supabase
+        .updates({
+            title: formData.title,
+            description: formData.description,
+            priority: formData.priority,
+            status: formData.status,
+            due_date: formData.dueDate,
+            updated_at: Date()
+        })
+        .eq("id",id)
+        .select()
+        .single()
+
+    if (error) {
+    console.error("Error updating tasks:", error);
+    console.error("Update error details:", JSON.stringify(error, null, 2));
+    throw error;
+  }
+
+  console.log("Tasks updated successfully:", data);
+  return data;
+}
+

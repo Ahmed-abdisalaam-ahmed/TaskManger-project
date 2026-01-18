@@ -5,7 +5,6 @@ const ThemeContext = createContext();
 export function ThemeProvider({ children }) {
   // Start with 'dark' if nothing is saved in localStorage
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
-
   useEffect(() => {
     const root = window.document.documentElement;
     
