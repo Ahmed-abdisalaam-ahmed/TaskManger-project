@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Search, Filter, Trash2, CheckCircle, Clock } from "lucide-react";
+import { Search, Filter, Trash2, CheckCircle, Clock, Edit, ChartBarBig } from "lucide-react";
 import toast from "react-hot-toast";
 import supabase from "../../lib/supabase";
+import { Link, useNavigate, useParams } from "react-router";
+import { useAuth } from "../../contexts/AuthContext";
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterPriority, setFilterPriority] = useState("all");
+  const [filterStatus, setFilterStatus] = useState("status");
+  const [filterDate, setFilterDate] = useState("");
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate()
+  const {user} = useAuth()
 
   useEffect(() => {
-    fetchTasks();
-  }, []);
+    if(user?.id){
+       fetchTasks();
+    }else{
+      navigate('/login')
+    }
+  }, [user?.id]);
 
   const fetchTasks = async () => {
     const { data, error } = await supabase
@@ -23,33 +33,31 @@ const TaskList = () => {
     else setTasks(data);
     setLoading(false);
   };
-  const formatDate = (dateString) => {
-    if (!dateString) return 'No deadline';
 
-    try {
-      const options = { year: 'numeric', month: 'long', day: 'numeric' };
-      const date = new Date(dateString);
-
-      // Check if date is valid
-      if (isNaN(date.getTime())) {
-        return 'Invalid date';
-      }
-
-      return date.toLocaleDateString(undefined, options);
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return 'Date format error';
-    }
-  }
-  // --- FILTER LOGIC ---
+  
+// const formatDate = (dateString)=> {
+//   if(!dateString) return ""
+//   const date = new date(dateString);
+//   return date.toLocaleDateString("en-US", {
+//     year: "numeric",
+//     month: "short",
+//     day: "numeric"
+//   })
+// }
+  // filter logic  
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch = task.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          task.description?.toLowerCase().includes(searchTerm.toLowerCase());
+                  task.description?.toLowerCase().includes(searchTerm.toLowerCase());
     
     const matchesPriority = filterPriority === "all" || task.priority === filterPriority;
 
-    return matchesSearch && matchesPriority;
+    const matchesStatus = filterStatus === "status" || task.status === filterStatus;
+
+    const matchesDate = !filterDate || task.due_date?.includes(filterDate)
+
+    return matchesSearch && matchesPriority && matchesDate && matchesStatus;
   });
+  
 
   return (
     <div className="p-6 max-w-6xl mx-auto">
@@ -80,6 +88,25 @@ const TaskList = () => {
             <option value="low">Low</option>
           </select>
         </div>
+
+        {/* filter bu status */}
+        <div className="flex flex-wrap gap-2 items-center">
+          <ChartBarBig size={18} className="text-slate-400" />
+          <select 
+            className="bg-white dark:bg-slate-800 rounded-xl px-4 py-2 outline-none shadow-sm"
+            onChange={(e) => setFilterStatus(e.target.value)}
+          >
+            <option value="status">All status</option>
+            <option value="todo">Not Started</option>
+            <option value="in_progress">in-progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+      {/* Search by date */}
+      <input type="date"
+      className="bg-white dark:bg-slate-800 rounded-xl px-4 py-2 shadow-sm"
+        onChange={(e) => setFilterDate(e.target.value)}
+      />
       </div>
 
       {/* Task List Rendering */}
@@ -93,7 +120,7 @@ const TaskList = () => {
                 </div>
                 <div>
                   <h3 className="font-semibold dark:text-white">{task.title}</h3>
-                  <p className="text-sm text-slate-500">{formatDate(task.due_date) || "No deadline"}</p>
+                  <p className="text-sm text-slate-500">{task.due_date || "No deadline"}</p>
                 </div>
               </div>
 
@@ -105,16 +132,32 @@ const TaskList = () => {
                 }`}>
                   {task.priority}
                 </span>
+                <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-lg ${
+                  task.status === 'todo' ? 'bg-red-100 text-red-600 dark:bg-red-900/30' : 
+                  task.status === 'in_progress' ? 'bg-orange-100 text-orange-600 dark:bg-orange-900/30' : 
+                  'bg-green-100 text-green-600 dark:bg-green-900/30'
+                }`}>
+                  {task.status}
+                </span>
                 
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                   <button className="p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg text-slate-400 hover:text-green-500">
+
+                   <Link 
+                   
+                   className="p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg text-slate-400 hover:text-green-500">
                       <CheckCircle size={18} />
-                   </button>
+                   </Link>
+                   <Link 
+                   to={`/dashboard/editorTasks/${task.id}`}
+                   className="p-2 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-lg text-slate-400 hover:text-orange-500">
+                      <Edit size={18} />
+                   </Link>
                    <button className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500">
                       <Trash2 size={18} />
                    </button>
                 </div>
               </div>
+
             </div>
           ))
         ) : (

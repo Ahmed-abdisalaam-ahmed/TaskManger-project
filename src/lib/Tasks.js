@@ -8,7 +8,8 @@ export async function CreateTask(tasks) {
         title:tasks.title,
         description:tasks.description,
         priority:tasks.priority,
-        due_date:tasks.dueDate,
+        status:tasks.status,
+        due_date:tasks.due_date,
         user_id:tasks.user_id
     }
     
@@ -30,17 +31,18 @@ export async function UpdateTasks(id , updates) {
 
 
     const {error , data} = await supabase
-        .updates({
-            title: formData.title,
-            description: formData.description,
-            priority: formData.priority,
-            status: formData.status,
-            due_date: formData.dueDate,
-            updated_at: Date()
+        .from('tasks')
+        .update({
+            title: updates.title,
+            description: updates.description,
+            priority: updates.priority,
+            status: updates.status,
+            due_date: updates.due_date,
+            updated_at: new Date().toISOString()
         })
         .eq("id",id)
         .select()
-        .single()
+        
 
     if (error) {
     console.error("Error updating tasks:", error);

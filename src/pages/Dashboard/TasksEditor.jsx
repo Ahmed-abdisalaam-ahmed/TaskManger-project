@@ -18,22 +18,69 @@ import clsx from "clsx";
 import { CreateTask, UpdateTasks } from "../../lib/Tasks";
 import { useNavigate, useParams } from "react-router";
 import toast from "react-hot-toast";
+import { useAuth } from "../../contexts/AuthContext";
+import { useEffect } from "react";
+import supabase from "../../lib/supabase";
 
 const TasksEditor = () => {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register,handleSubmit,reset,formState: { errors },} = useForm({
     defaultValues: {
       status: "todo",
       priority: "medium",
     },
   });
   const { id } = useParams();
-  console.log("the Id of url", id);
-
+  // console.log("the Id of url", id);
   const isEditMode = Boolean(id);
+
+  const {user} = useAuth();
+
+  // useEffect(() =>{
+  //   if(isEditMode){
+  //     const fetchTasks = async () => {
+  //       try {
+  //         const {error, data} = await supabase
+  //           .from('tasks')
+  //           .select("*")
+  //           .eq("id", id)
+  //           .single()
+
+  //           if(data){
+  //             reset({
+  //             title: data.title,
+  //             description: data.description,
+  //             priority: data.priority,
+  //             status: data.status,
+  //             due_date: data.dueDate,
+  //             })
+  //           }
+  //       } catch (error) {
+  //         console.log("Faild to take the task data",error)
+  //       }
+  //     }
+  //     fetchTasks();
+  //   }
+  // },[user,isEditMode,])
+useEffect(() => {
+  if (isEditMode && id) {
+    const fetchTask = async () => {
+      const { data } = await supabase.from("tasks").select("*").eq("id", id).maybeSingle();
+
+      if (data) {
+        reset({
+          title: data.title,
+          description: data.description,
+          status: data.status,
+          priority: data.priority,
+          // Match the name in your register("dueDate") to the DB column due_date
+          due_date: data.due_date, 
+        });
+      }
+    };
+    fetchTask();
+  }
+}, [id, isEditMode, reset]);
+  
   const navigate = useNavigate();
 
   const onsubmit = async (formData) => {
@@ -56,7 +103,7 @@ const TasksEditor = () => {
       navigate("/dashboard/taskList");
     } catch (error) {
       console.error("Failed to add task:", error);
-      toast.error("Addition failed, please try again!");
+      toast.error(error.message || "Addition failed, please try again!");
     }
   };
 
@@ -74,7 +121,7 @@ const TasksEditor = () => {
       <div className="max-w-2xl mx-auto">
         <div className="mb-8">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-            {isEditMode ? "Create New Task" : "Edit Task"}
+            {isEditMode ? "Edit Task": "Create New Task"}
           </h1>
           <p className="text-slate-500 text-sm">
             Fill in the details below to organize your workflow.
@@ -198,7 +245,7 @@ const TasksEditor = () => {
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl transition-all shadow-lg shadow-blue-500/20 active:scale-[0.98] cursor-pointer"
                 type="submit"
               >
-                {isEditMode ? "Confirm & Create Task" : "Save Changes"}
+                {isEditMode ?"Save Changes":"Confirm & Create Task"}
               </button>
             </div>
           </form>
