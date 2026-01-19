@@ -57,7 +57,7 @@ export async function UpdateTasks(id , updates) {
 
 export async function DeleteTasks(id) {
     console.log(`Atttemping to delete article with ID: ${id}`);
-    
+
   const { data, error } = await supabase
     .from("tasks")
     .delete()
@@ -73,4 +73,20 @@ export async function DeleteTasks(id) {
 
   return data;
 
+}
+
+export async function UpdateTaskStatus(id, newStatus) {
+    try {
+        const {data, error} = await supabase
+            .from("tasks")
+            .update({status: newStatus})
+            .eq("id", id)
+            .select()
+
+            if(error) throw error
+            return data
+    } catch (error) {
+        console.error("Error update status", error.message)
+        
+    }
 }

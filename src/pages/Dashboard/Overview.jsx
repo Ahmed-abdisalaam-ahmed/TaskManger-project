@@ -1,17 +1,25 @@
 import { LucideGraduationCap, ListTodo, Activity, CheckCircle2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import supabase from "../../lib/supabase"; // Hubi halka uu jiro supabase client-gaaga
+import ChartTasks from "../../components/ChartTasks";
 
 const Overview = () => {
+
   const [stats, setStats] = useState({ total: 0, progress: 0, done: 0 });
+  const [tasks, setTasks] = useState([])
+
+  console.log("data beo", stats)
 
   useEffect(() => {
     const fetchStats = async () => {
       const { data, error } = await supabase.from("tasks").select("status");
       
       if (data) {
+        setTasks(data)
         setStats({
+          
           total: data.length,
+
           progress: data.filter((t) => t.status === "in_progress").length,
           done: data.filter((t) => t.status === "completed").length,
         });
@@ -19,16 +27,6 @@ const Overview = () => {
     };
 
     fetchStats();
-
-    // Real-time update: Haddii database-ku is beddelo, nambaradu ha is beddeleen
-    // const channel = supabase
-    //   .channel("stats-sync")
-    //   .on("postgres_changes", { event: "*", schema: "public", table: "tasks" }, () => {
-    //     fetchStats();
-    //   })
-    //   .subscribe();
-
-    // return () => supabase.removeChannel(channel);
   }, []);
 
   return (
@@ -78,6 +76,7 @@ const Overview = () => {
       <div className="mt-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 min-h-[400px] border border-gray-200 dark:border-gray-800">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Activity Overview</h3>
         <p className="text-slate-500 text-sm italic">Halkan waxaa ka muuqan doona shaxanka (Charts) ama shaqooyinka ugu dambeeyay...</p>
+        <ChartTasks tasks={tasks}/>
       </div>
     </div>
   );
