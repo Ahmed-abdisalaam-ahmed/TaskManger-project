@@ -13,8 +13,8 @@ import { FaUser } from "react-icons/fa";
 const SideBar = ({ closeMenu }) => {
   const { profile, user } = useAuth();
   return (
-    <div className="flex flex-col h-full min-w-full">
-      <nav className="flex flex-col gap-8 flex-grow">
+    <div className=" relative flex flex-col h-[500px] min-w-full">
+      <nav className="flex flex-col gap-8 flex-grow overflow-y-auto">
         {/* Overview Section */}
         <div className="space-y-4">
           <h2 className="px-4 text-xs font-semibold tracking-tight text-slate-500 uppercase">
@@ -96,7 +96,7 @@ const SideBar = ({ closeMenu }) => {
           </NavLink>
         </div>
       </nav>
-      <div className="p-4 mt-auto border-t border-slate-100 dark:border-slate-800 ">
+      <div className="fixed z-99 bottom-0 py-4 mt-auto border-t border-slate-300 dark:border-slate-800 flex-shrink-0">
         <div className="flex items-center gap-3">
           <div className="relative flex shrink-0 overflow-hidden rounded-full h-8 w-8 border border-border bg-slate-100 dark:bg-slate-800">
             {profile?.avatar_url ? (
