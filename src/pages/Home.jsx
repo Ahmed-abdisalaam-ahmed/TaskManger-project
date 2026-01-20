@@ -12,7 +12,7 @@ import Footer from "../components/Footer";
 import FinalCall from "../components/ui/FinalCallSection";
 import FaqSection from "../components/ui/FaqSection";
 import FeaturesSection from "../components/ui/FeaturesSection";
-import HeroSection from "../components/ui/Herosection";
+import HeroSection from "../components/ui/HeroSection";
 
 const Home = () => {
   return (
