@@ -14,12 +14,15 @@ import {
   ChartBarBig,
   Loader,
   Loader2,
+  RotateCcw,
+  ChevronDown,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import supabase from "../../lib/supabase";
 import { Link, useNavigate, useParams } from "react-router";
 import { useAuth } from "../../contexts/AuthContext";
-import { DeleteTasks } from "../../lib/Tasks";
+import { DeleteTasks, UpdateTaskStatus } from "../../lib/Tasks";
+import { motion } from "motion/react"
 
 const TaskList = () => {
   const [tasks, setTasks] = useState([]);
@@ -36,15 +39,21 @@ const TaskList = () => {
 
   const [optimisticTasks, updateOptimisticTasks] = useOptimistic(
     tasks,
-    (state, taskId) =>
-      state.filter((tasks) => tasks.id !== taskId),
+    (state, taskId) => state.filter((tasks) => tasks.id !== taskId),
   );
 
-  const confrimDelete = (tasks) => {
-    setTasksToDelete(tasks)
-  }
+  const HandleReset = () => {
+    setFilterStatus("status")
+    setFilterPriority("all")
+    setFilterDate("")
+    setSearchTerm("")
+  };
 
-    const HandleDelete = async () => {
+  const confrimDelete = (tasks) => {
+    setTasksToDelete(tasks);
+  };
+
+  const HandleDelete = async () => {
     if (!tasksToDelete) return;
 
     try {
@@ -65,7 +74,6 @@ const TaskList = () => {
       console.error("Error fetching Tasks:", error);
       setError("Failed to load your Tasks. Please try again.");
       toast.error("Failed to load your Tasks");
-
     } finally {
       setLoading(false);
     }
@@ -73,7 +81,24 @@ const TaskList = () => {
 
   useEffect(() => {
     if (user?.id) {
+       fetchTasks();
+      const channel = supabase
+        .channel("realtime-task-updates")
+        .on("postgres_changes", {
+            event: "*", 
+            schema: "public",
+            table: "tasks" ,
+          },
+
+    payload => {
+      console.log("update event recevied: ",payload)
       fetchTasks();
+    }).subscribe();
+
+      return () => {
+        console.log("Clean up channel subsciption");
+        supabase.removeChannel(channel) 
+      }
     } else {
       navigate("/login");
     }
@@ -122,6 +147,7 @@ const TaskList = () => {
             placeholder="Search tasks..."
             className="w-full pl-10 pr-4 py-2 rounded-xl border-none bg-white dark:bg-slate-800 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white shadow-sm"
             onChange={(e) => setSearchTerm(e.target.value)}
+            value={searchTerm}
           />
         </div>
 
@@ -131,6 +157,7 @@ const TaskList = () => {
           <select
             className="bg-white dark:bg-slate-800 border-none rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white shadow-sm cursor-pointer"
             onChange={(e) => setFilterPriority(e.target.value)}
+            value={filterPriority}
           >
             <option value="all">All Priorities</option>
             <option value="high">High</option>
@@ -139,12 +166,13 @@ const TaskList = () => {
           </select>
         </div>
 
-        {/* filter bu status */}
+        {/* Filter bu status */}
         <div className="flex flex-wrap gap-2 items-center">
           <ChartBarBig size={18} className="text-slate-400" />
           <select
             className="bg-white dark:bg-slate-800 rounded-xl px-4 py-2 outline-none shadow-sm"
             onChange={(e) => setFilterStatus(e.target.value)}
+            value={filterStatus}
           >
             <option value="status">All status</option>
             <option value="todo">Not Started</option>
@@ -155,9 +183,19 @@ const TaskList = () => {
         {/* Search by date */}
         <input
           type="date"
-          className="bg-white dark:bg-slate-800 rounded-xl px-4 py-2 shadow-sm"
+          className="bg-white dark:bg-slate-800 rounded-xl px-4 py-2 shadow-sm md:w-auto"
           onChange={(e) => setFilterDate(e.target.value)}
+          value={filterDate}
         />
+        <motion.button
+          whileHover={{ rotate: -60 }}
+          whileTap={{ scale: 0.9 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="rounded-lg hover:bg-slate-200 dark:hover:bg-slate-900 p-2 cursor-pointer"
+          onClick={HandleReset}
+        >
+          <RotateCcw />
+        </motion.button>
       </div>
 
       {/* Task List Rendering */}
@@ -181,8 +219,33 @@ const TaskList = () => {
                   </p>
                 </div>
               </div>
+                
+            <div className="flex flex-wrap items-center gap-4 mt-4 md:mt-0">
+                {/* STATUS TRAVEL DROPDOWN (NEW) */}
+                <div className="relative">
+                  <select
+                    value={task.status}
+                    onChange={async (e) => {
+                      const newStatus = e.target.value;
+                      await UpdateTaskStatus(task.id, newStatus);
+                      toast.success(`Journey updated to ${newStatus}! ✨`);
+                    }}
+                    className={`appearance-none pl-4 pr-10 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all border-none outline-none cursor-pointer ${
+                      task.status === "completed" ? "bg-emerald-500/10 text-emerald-600" :
+                      task.status === "in_progress" ? "bg-blue-500/10 text-blue-600" : "bg-slate-100 dark:bg-slate-800 text-slate-500"
+                    }`}
+                  >
+                    <option value="todo">Not Started</option>
+                    <option value="in_progress">In Progress</option>
+                    <option value="completed">Achieved</option>
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50" />
+                </div>
+              </div>
 
-              <div className="flex items-center gap-6">
+
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6">
                 <span
                   className={`text-[10px] font-bold uppercase px-3 py-1 rounded-lg ${
                     task.priority === "high"
@@ -216,10 +279,11 @@ const TaskList = () => {
                   >
                     <Edit size={18} />
                   </Link>
-                  <button 
-                  onClick={() => confrimDelete(task)}
-                  className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500">
-                    <Trash2 size={18}/>
+                  <button
+                    onClick={() => confrimDelete(task)}
+                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg text-slate-400 hover:text-red-500"
+                  >
+                    <Trash2 size={18} />
                   </button>
                 </div>
               </div>
@@ -233,8 +297,8 @@ const TaskList = () => {
           </div>
         )}
       </div>
-       {/* // Modal Delet confrim */}
-       {tasksToDelete && (
+      {/* // Modal Delet confrim */}
+      {tasksToDelete && (
         <div className="fixed z-999inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -276,8 +340,6 @@ const TaskList = () => {
         </div>
       )}
     </div>
-   
-    
   );
 };
 

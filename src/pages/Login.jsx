@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { signIn } from '../lib/Auth';
 import toast from 'react-hot-toast';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,7 @@ const Login = () => {
 
     try {
       await signIn(email,password)
-      toast.success("Welcome back!");
+      toast.success(`Welcome back!`);
       navigate('/')
     } catch (error) {
       setError(error.message || "Failed to sign in . Please check your credentials.")
@@ -88,7 +89,7 @@ const Login = () => {
             <button
               type="submit"
               className="w-full bg-slate-950 hover:bg-slate-700 text-white dark:bg-slate-950 font-bold py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition duration-200
-              disabled:cursor-not-allowed disabled:bg-orange-500"
+              disabled:cursor-not-allowed disabled:bg-slate-500"
               disabled={isLoading}
             >
               {isLoading ? "Signing in..." : "Sign In"}
@@ -101,8 +102,8 @@ const Login = () => {
             <p className="text-gray-600 text-sm">
               Don't have an account?{" "}
               <Link
-                to="/signup"
-                className="text-slate-100 hover:text-slate-500 font-semibold"
+                to="/register"
+                className="dark:text-slate-100 hover:text-slate-500 text-slate-900 font-semibold"
               >
                 Sign up
               </Link>

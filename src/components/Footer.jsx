@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 
 const Footer = () => {
   return (
-      <footer className="bg-accent dark:bg-slate-900 border-t">
+      <footer className="bg-accent dark:bg-slate-900 bg-slate-200 border-t">
       <div className="container mx-auto flex flex-col items-center px-4 md:px-6 py-16">
           <div className="flex justify-center items-center space-x-6 mb-4 ">
             <Link to="https://www.facebook.com/ChehabuDiin" target="_blank" className="text-muted-foreground hover:text-foreground">

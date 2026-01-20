@@ -26,33 +26,32 @@ const Header = () => {
                 SwiftTask
               </span>
             </Link>
-
-            <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link
-                to="/"
-                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                Home
-              </Link>
-              <Link
-                to="about"
-                className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
-              >
-                About
-              </Link>
-
-              {isLoggedIn && (
-                <>
-                  <Link
-                    to="/dashboard"
-                    className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
-                  >
-                    dashboard
-                  </Link>
-                </>
-              )}
-            </nav>
           </div>
+          <nav className="hidden sm:ml-6 sm:flex sm:space-x-8">
+            <Link
+              to="/"
+              className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Home
+            </Link>
+            <Link
+              to="about"
+              className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              About
+            </Link>
+
+            {isLoggedIn && (
+              <>
+                <Link
+                  to="/dashboard"
+                  className="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  dashboard
+                </Link>
+              </>
+            )}
+          </nav>
 
           <div className="flex items-center">
             <div className="p-2">
