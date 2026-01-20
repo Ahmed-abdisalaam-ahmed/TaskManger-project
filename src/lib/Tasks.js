@@ -54,3 +54,23 @@ export async function UpdateTasks(id , updates) {
   return data;
 }
 
+
+export async function DeleteTasks(id) {
+    console.log(`Atttemping to delete article with ID: ${id}`);
+    
+  const { data, error } = await supabase
+    .from("tasks")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    console.error("Error deleting article:", error);
+    console.error("Article error details:", JSON.stringify(error, null, 2));
+    throw error;
+  } else {
+    console.log(`Successfully deleted article with ID: ${id}`);
+  }
+
+  return data;
+
+}
