@@ -43,7 +43,7 @@ const ChartTasks = ({ tasks }) => {
   };
 
   return (
-    <div className="w-full h-[300px] mt-4">
+    <div className="w-full h-75 mt-4">
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
           {/* Subtle Grid Lines */}
