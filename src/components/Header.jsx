@@ -170,13 +170,6 @@ const Header = () => {
                     >
                       Dashboard
                     </Link>
-                    <Link
-                      onClick={() => setIsMenuOpen(false)}
-                      to="/articles"
-                      className="text-lg font-medium dark:text-white"
-                    >
-                      Articles
-                    </Link>
                     <button
                       onClick={logOut}
                       className="text-left text-lg font-medium text-red-500"
