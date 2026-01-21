@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 const About = () => {
   return (
     <>
-        <div className="bg-slate-950 min-h-screen text-white pt-24 px-6">
+    <div className="bg-slate-950 min-h-screen text-white pt-24 px-6">
       <div className="max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-8">About SwiftTask</h2>
         

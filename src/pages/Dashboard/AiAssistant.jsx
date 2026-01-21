@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Bot, User, Sparkles } from "lucide-react";
+import ComingSoonModal from "../../components/ui/ComingSoonModal";
 
 const AiAssistant = () => {
   const [messages, setMessages] = useState([
@@ -30,6 +31,7 @@ const AiAssistant = () => {
 
   return (
     <div className="flex flex-col h-[calc(100vh-120px)] max-w-4xl mx-auto p-4">
+      <ComingSoonModal />
       {/* Header */}
       <div className="flex items-center gap-3 mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800">
         <div className="p-2 bg-blue-500 rounded-lg text-white">
