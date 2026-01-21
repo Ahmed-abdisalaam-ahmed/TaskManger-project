@@ -73,7 +73,7 @@ const Overview = () => {
       </div>
 
       {/* Main Content Area */}
-      <div className="mt-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 min-h-[400px] border border-gray-200 dark:border-gray-800">
+      <div className="mt-8 bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 min-h-400px border border-gray-200 dark:border-gray-800">
         <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-4">Activity Overview</h3>
         <p className="text-slate-500 text-sm italic">Halkan waxaa ka muuqan doona shaxanka (Charts) ama shaqooyinka ugu dambeeyay...</p>
         <ChartTasks tasks={tasks}/>
