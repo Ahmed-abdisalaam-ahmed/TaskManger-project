@@ -299,7 +299,7 @@ const TaskList = () => {
       </div>
       {/* // Modal Delet confrim */}
       {tasksToDelete && (
-        <div className="fixed z-999inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
+        <div className="fixed z-999 inset-0 bg-black bg-opacity-50 flex justify-center items-center p-4 z-50">
           <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
             <h3 className="text-xl font-bold text-gray-900 mb-4">
               Confirm Deletion
